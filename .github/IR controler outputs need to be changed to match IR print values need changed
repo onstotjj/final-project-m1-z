@@ -26,14 +26,15 @@ enum RemoteMode {
 };
 
 // Declare and initialize the current state variable
-RemoteMode CurrentRemoteMode = PLAYSTATION;
-// RemoteMode CurrentRemoteMode = IR_REMOTE;
+// RemoteMode CurrentRemoteMode = PLAYSTATION;
+RemoteMode CurrentRemoteMode = IR_REMOTE;
 
 // Tuning Parameters
 const uint16_t lowSpeed = 15;
 const uint16_t fastSpeed = 30;
 
 Servo myservo;  // create servo object to control a servo
+int gripper_pos = 139;  // Gripper starts open
 
 void setup() {
   Serial.begin(57600);
@@ -161,18 +162,20 @@ void left_turn() {
 }
 /* Opens the gripper */
 void open() {
-  for (int pos = 40; pos < 140; pos += 1)  // goes from 0 degrees to 180 degrees
+  for (int pos = gripper_pos; pos < 140; pos += 1)  // goes from 0 degrees to 180 degrees
   {                                        // in steps of 1 degree
     myservo.write(pos);                    // tell servo to go to position in variable 'pos'
     delay(15);                             // waits 15 ms for the servo to reach the position
   }
+  gripper_pos = 41;
 }
 /* Closes the gripper */
 void close() {
-  for (int pos = 140; pos >= 41; pos -= 1) {  // goes from 180 degrees to 0 degrees
+  for (int pos = gripper_pos; pos >= 41; pos -= 1) {  // goes from 180 degrees to 0 degrees
     myservo.write(pos);                       // tell servo to go to position in variable 'pos'
     delay(15);                                // waits 15 ms for the servo to reach the position
   }
+  gripper_pos = 139;
 }
 /* Stops robot forward: both motors disabled */
 void stop() {
@@ -226,32 +229,32 @@ void RemoteControlPlaystation() {
   }
 }
 void IRControler(){
-  if (irRX.decodeIR(PSB_PAD_UP)) {
-    Serial.println("PAD UP button pushed ");
-    forward();
-  } else if (irRX.decodeIR(PSB_PAD_DOWN)) {
-    Serial.println("PAD DOWN button pushed ");
-    backwards();
-  } else if (irRX.decodeIR(PSB_CROSS)) {
-    Serial.println("CROSS button pushed");
-    stop();
-  } else if (irRX.decodeIR(PSB_SQUARE)) {
-    Serial.println("SQUARE button pushed");
-    open();
-  } else if (irRX.decodeIR(PSB_TRIANGLE)) {
-    Serial.println("TRIANGLE button pushed");
-    close();
-  } else if (irRX.decodeIR(PSB_L2)) {
-    Serial.println("L2 button pushed");
-    left_turn();
-  } else if (irRX.decodeIR(PSB_R2)) {
-    Serial.println("R2 button pushed");
-    right_turn();
-  } else if (irRX.decodeIR(PSB_L1)) {
-    Serial.println("L1 button pushed");
-    left_spin();
-  } else if (irRX.decodeIR(PSB_R1)) {
-    Serial.println("R1 button pushed");
-    right_spin();
-  }
-}
+  // if (irRX.decodeIR(F4BA2988)) {
+  //   Serial.println("2 button pushed ");
+  //   forward();
+  // }
+  // } else if (irRX.decodeIR(8)) {
+  //   Serial.println("8 button pushed ");
+  //   backwards();
+  // } else if (irRX.decodeIR(5)) {
+  //   Serial.println("5 button pushed");
+  //   stop();
+  // } else if (irRX.decodeIR(0)) {
+  //   Serial.println("0 button pushed");
+  //   open();
+  // } else if (irRX.decodeIR(EQ)) {
+  //   Serial.println("EQ button pushed");
+  //   close();
+  // } else if (irRX.decodeIR(1)) {
+  //   Serial.println("1 button pushed");
+  //   left_turn();
+  // } else if (irRX.decodeIR(3)) {
+  //   Serial.println("3 button pushed");
+  //   right_turn();
+  // } else if (irRX.decodeIR(4)) {
+  //   Serial.println("4 button pushed");
+  //   left_spin();
+  // } else if (irRX.decodeIR(6)) {
+  //   Serial.println("6 button pushed");
+  //   right_spin();
+  // }
